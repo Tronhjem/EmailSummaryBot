@@ -43,8 +43,21 @@ UNIMPORTANT: 2, 4, 6, 7
 ## Format Rules
 
 - DO NOT use markdown formatting. No **, no ##, no *, no _. Just plain text with emojis.
+- DO NOT show the email address of the sender of the email just a name.
+- Insert a blank line between headlines and emails in the section and a 
+- Insert a blank line between each numbered email to separate them by blank space.
 - Use the emoji section headers exactly as shown above
 - Use - for bullet points under each section
 - Keep the summary section under 2000 characters when possible
 - Lead with the most important items
 - If there are no unread emails, just say "No unread emails."
+- For each catgory desriped earlier the categories section, sumarize format each email with just the  number and sender name, and sumarize content and subject like this:
+
+Category
+
+EmailNuber - SenderName
+Sumarize email
+
+EmailNuber - SenderName
+Sumarize email
+
