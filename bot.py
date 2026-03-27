@@ -28,6 +28,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"/start from chat_id={chat_id}")
 
 
+async def emails_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    logger.info(f"/emails from chat_id={chat_id}")
+    await update.message.reply_text("Fetching and summarizing emails...")
+
+    try:
+        from summarize_emails import summarize_emails
+        summary = summarize_emails(auto_read=True)
+
+        # Telegram messages max 4096 chars — split if needed
+        while summary:
+            chunk, summary = summary[:4096], summary[4096:]
+            await update.message.reply_text(chunk)
+    except Exception as e:
+        logger.error(f"Email summary failed: {e}")
+        await update.message.reply_text(f"Error: {e}")
+
+
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     user = update.effective_user
@@ -39,6 +57,7 @@ def main():
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("emails", emails_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     logger.info("Bot started polling...")
