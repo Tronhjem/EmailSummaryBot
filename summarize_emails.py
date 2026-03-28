@@ -1,14 +1,20 @@
-"""Fetch unread Gmail messages and summarize them using Claude CLI."""
+"""Fetch unread Gmail messages and summarize them using the Claude API."""
 
 import argparse
+import os
 import re
-import subprocess
 from pathlib import Path
+
+import anthropic
+from dotenv import load_dotenv
 
 import gmail
 
+load_dotenv()
+
 PROMPT_PATH = Path(__file__).parent / "prompts" / "email_summary.md"
-MAX_BODY_CHARS = 500
+MAX_BODY_CHARS = 600
+MODEL = "claude-haiku-4-5-20251001"
 
 
 def format_emails_for_prompt(messages):
@@ -32,17 +38,18 @@ def format_emails_for_prompt(messages):
 
 
 def call_claude(prompt, content):
-    """Call the Claude CLI and return the response."""
-    full_prompt = f"{prompt}\n\n---\n\nHere are the emails:\n\n{content}"
-    result = subprocess.run(
-        ["claude", "-p", full_prompt],
-        capture_output=True,
-        text=True,
-        timeout=120,
+    """Call the Claude API and return the response."""
+    client = anthropic.Anthropic()
+    message = client.messages.create(
+        model=MODEL,
+        max_tokens=4096,
+        temperature=0,
+        system=prompt,
+        messages=[
+            {"role": "user", "content": f"Here are the emails:\n\n{content}"}
+        ],
     )
-    if result.returncode != 0:
-        raise RuntimeError(f"Claude CLI failed: {result.stderr}")
-    return result.stdout.strip()
+    return message.content[0].text
 
 
 def parse_unimportant(response):
