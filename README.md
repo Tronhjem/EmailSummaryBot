@@ -1,6 +1,7 @@
 # Daily Email Summary Bot for Telegram
 
 A Python Telegram bot that fetches unread Gmail messages, summarizes them using the Claude API, and auto-marks unimportant emails as read.
+Disclaimer, I was lazy with this one and using claude for some of the functionality and for generating the rest of this Readme
 
 ## Features
 
